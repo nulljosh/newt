@@ -14,6 +14,8 @@ function App() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [totalResults, setTotalResults] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
+  const [parallaxOffset, setParallaxOffset] = useState(0);
 
   useEffect(() => {
     // Connect to Socket.io server
@@ -86,6 +88,21 @@ function App() {
     };
   }, []);
 
+  // Parallax effect on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setParallaxOffset(window.scrollY * 0.5);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Save dark mode preference
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
   const handleSearch = (query) => {
     if (query.trim() && socket) {
       setLoading(true);
@@ -106,8 +123,11 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <header className="header">
+    <div className="app" data-theme={darkMode ? 'dark' : 'light'}>
+      <header className="header" style={{ backgroundPosition: `0 ${parallaxOffset}px` }}>
+        <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)} title="Toggle dark mode">
+          {darkMode ? '☀️' : '🌙'}
+        </button>
         <h1>Newt</h1>
         <p className="tagline">Real-time News Aggregation</p>
       </header>

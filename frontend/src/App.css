@@ -1,13 +1,53 @@
 .app {
   min-height: 100vh;
   background-color: #fafafa;
+  transition: background-color 0.3s ease;
+}
+
+.app[data-theme='dark'] {
+  background-color: #0f0f0f;
 }
 
 .header {
-  background: #4a5568;
+  background: rgba(74, 85, 104, 0.8);
+  backdrop-filter: blur(10px);
   color: white;
   padding: 2rem 1rem;
   text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+
+.app[data-theme='dark'] .header {
+  background: rgba(20, 20, 20, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.dark-mode-toggle:active {
+  transform: scale(0.95);
 }
 
 .header h1 {
@@ -33,13 +73,19 @@
 }
 
 .error-banner {
-  background-color: #fee;
+  background-color: rgba(255, 0, 0, 0.1);
   border-left: 4px solid #f44;
-  color: #c00;
+  color: #ff6b6b;
   padding: 1rem;
   margin: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.app[data-theme='dark'] .error-banner {
+  background-color: rgba(255, 0, 0, 0.15);
+  color: #ff8787;
 }
 
 .loading {
@@ -47,16 +93,29 @@
   padding: 3rem;
   font-size: 1.2rem;
   color: #666;
+  transition: color 0.3s ease;
+}
+
+.app[data-theme='dark'] .loading {
+  color: #999;
 }
 
 .update-info {
   text-align: center;
   padding: 0.5rem 1rem;
-  background-color: #e8f4f8;
+  background-color: rgba(0, 102, 204, 0.1);
   color: #0066cc;
   font-size: 0.9rem;
-  border-radius: 4px;
+  border-radius: 8px;
   margin: 1rem;
+  border: 1px solid rgba(0, 102, 204, 0.2);
+  transition: all 0.3s ease;
+}
+
+.app[data-theme='dark'] .update-info {
+  background-color: rgba(0, 150, 255, 0.1);
+  color: #0096ff;
+  border-color: rgba(0, 150, 255, 0.2);
 }
 
 .footer {
@@ -65,9 +124,20 @@
   background-color: #fafafa;
   border-top: 1px solid #e0e0e0;
   margin-top: 3rem;
+  transition: all 0.3s ease;
+}
+
+.app[data-theme='dark'] .footer {
+  background-color: #1a1a1a;
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 .footer p {
   color: #999;
   font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.app[data-theme='dark'] .footer p {
+  color: #666;
 }

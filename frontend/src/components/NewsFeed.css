@@ -12,6 +12,11 @@
   padding: 3rem 1rem;
   font-size: 1.1rem;
   color: #999;
+  transition: color 0.3s ease;
+}
+
+[data-theme='dark'] .empty-state {
+  color: #666;
 }
 
 @media (min-width: 640px) {
@@ -49,4 +54,9 @@
   text-align: center;
   font-size: 1rem;
   color: #666;
+  transition: color 0.3s ease;
+}
+
+[data-theme='dark'] .loading-more {
+  color: #999;
 }

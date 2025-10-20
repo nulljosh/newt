@@ -1,9 +1,17 @@
 .search-bar {
-  background-color: white;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   padding: 1.5rem 1rem;
   position: sticky;
   top: 0;
   z-index: 10;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .search-bar {
+  background: rgba(20, 20, 20, 0.85);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .search-bar form {
@@ -16,31 +24,64 @@
 .search-input {
   flex: 1;
   padding: 0.75rem 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   font-size: 1rem;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+[data-theme='dark'] .search-input {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+[data-theme='dark'] .search-input::placeholder {
+  color: #666;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #4a5568;
+  border-color: rgba(74, 85, 104, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .search-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .search-button {
   padding: 0.75rem 1.5rem;
-  background-color: #4a5568;
+  background: rgba(74, 85, 104, 0.8);
+  backdrop-filter: blur(5px);
   color: white;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .search-button:hover {
-  background-color: #2d3748;
+  background: rgba(74, 85, 104, 0.95);
+}
+
+[data-theme='dark'] .search-button {
+  background: rgba(100, 100, 100, 0.7);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='dark'] .search-button:hover {
+  background: rgba(120, 120, 120, 0.9);
 }
 
 .search-button:active {
