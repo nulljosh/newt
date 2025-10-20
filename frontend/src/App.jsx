@@ -63,11 +63,15 @@ function App() {
     newSocket.on('news-error', (data) => {
       setError(data.message);
       setLoading(false);
+      // Auto-dismiss error after 5 seconds
+      setTimeout(() => setError(null), 5000);
     });
 
     newSocket.on('search-error', (data) => {
       setError(data.message);
       setLoading(false);
+      // Auto-dismiss error after 5 seconds
+      setTimeout(() => setError(null), 5000);
     });
 
     newSocket.on('disconnect', () => {

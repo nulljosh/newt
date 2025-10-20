@@ -29,17 +29,29 @@ const NEWS_UPDATE_INTERVAL = process.env.NEWS_UPDATE_INTERVAL || 300000; // 5 mi
 
 let updateInterval;
 
-// Emit fresh news to all connected clients
-const emitLatestNews = async () => {
+// Emit fresh news to all connected clients with retry logic
+const emitLatestNews = async (retryCount = 0, maxRetries = 2) => {
   try {
     const news = await getHeadlines();
+    if (!news.articles || news.articles.length === 0) {
+      throw new Error('No articles returned from API');
+    }
     io.emit('news-update', {
       timestamp: new Date(),
       articles: news.articles || []
     });
   } catch (error) {
-    console.error('Error fetching latest news:', error);
-    io.emit('news-error', { message: 'Failed to fetch news' });
+    console.error(`Error fetching latest news (attempt ${retryCount + 1}):`, error.message);
+
+    if (retryCount < maxRetries) {
+      console.log(`Retrying in 5 seconds...`);
+      setTimeout(() => emitLatestNews(retryCount + 1, maxRetries), 5000);
+    } else {
+      io.emit('news-error', {
+        message: 'Unable to fetch news. Please check your connection.',
+        type: 'critical'
+      });
+    }
   }
 };
 
@@ -50,10 +62,18 @@ io.on('connection', (socket) => {
   // Send current news immediately on connection
   emitLatestNews();
 
-  // Handle search requests
+  // Handle search requests with validation
   socket.on('search', async (query) => {
     try {
+      if (!query || query.trim().length === 0) {
+        socket.emit('search-error', { message: 'Please enter a search term' });
+        return;
+      }
       const results = await searchNews(query, 'publishedAt', 1);
+      if (!results.articles || results.articles.length === 0) {
+        socket.emit('search-error', { message: 'No results found for that search' });
+        return;
+      }
       socket.emit('search-results', {
         query,
         articles: results.articles || [],
@@ -61,8 +81,8 @@ io.on('connection', (socket) => {
         page: 1
       });
     } catch (error) {
-      console.error('Search error:', error);
-      socket.emit('search-error', { message: 'Search failed' });
+      console.error('Search error:', error.message);
+      socket.emit('search-error', { message: 'Search failed. Try again.' });
     }
   });
 
