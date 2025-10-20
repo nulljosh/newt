@@ -10,6 +10,10 @@ function App() {
   const [error, setError] = useState(null);
   const [socket, setSocket] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
     // Connect to Socket.io server
@@ -29,11 +33,31 @@ function App() {
       setArticles(data.articles);
       setLastUpdate(new Date(data.timestamp));
       setLoading(false);
+      setPage(1);
+      setSearchQuery('');
+      setTotalResults(0);
     });
 
     newSocket.on('search-results', (data) => {
       setArticles(data.articles);
       setLoading(false);
+      setPage(1);
+      setSearchQuery(data.query);
+      setTotalResults(data.totalResults);
+    });
+
+    newSocket.on('more-headlines', (data) => {
+      setArticles(prev => [...prev, ...data.articles]);
+      setPage(data.page);
+      setLoadingMore(false);
+      setTotalResults(data.totalResults);
+    });
+
+    newSocket.on('more-search-results', (data) => {
+      setArticles(prev => [...prev, ...data.articles]);
+      setPage(data.page);
+      setLoadingMore(false);
+      setTotalResults(data.totalResults);
     });
 
     newSocket.on('news-error', (data) => {
@@ -65,6 +89,18 @@ function App() {
     }
   };
 
+  const handleLoadMore = () => {
+    if (socket && !loadingMore && articles.length < totalResults) {
+      setLoadingMore(true);
+      const nextPage = page + 1;
+      if (searchQuery) {
+        socket.emit('load-more-search', { query: searchQuery, page: nextPage });
+      } else {
+        socket.emit('load-more-headlines', nextPage);
+      }
+    }
+  };
+
   return (
     <div className="app">
       <header className="header">
@@ -83,7 +119,7 @@ function App() {
           <div className="update-info">
             Last updated: {lastUpdate.toLocaleTimeString()}
           </div>
-          <NewsFeed articles={articles} />
+          <NewsFeed articles={articles} onLoadMore={handleLoadMore} isLoadingMore={loadingMore} hasMore={articles.length < totalResults} />
         </>
       )}
 

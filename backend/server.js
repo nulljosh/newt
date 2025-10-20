@@ -53,14 +53,46 @@ io.on('connection', (socket) => {
   // Handle search requests
   socket.on('search', async (query) => {
     try {
-      const results = await searchNews(query);
+      const results = await searchNews(query, 'publishedAt', 1);
       socket.emit('search-results', {
         query,
-        articles: results.articles || []
+        articles: results.articles || [],
+        totalResults: results.totalResults || 0,
+        page: 1
       });
     } catch (error) {
       console.error('Search error:', error);
       socket.emit('search-error', { message: 'Search failed' });
+    }
+  });
+
+  // Handle load more for headlines
+  socket.on('load-more-headlines', async (page) => {
+    try {
+      const results = await getHeadlines('us', null, page);
+      socket.emit('more-headlines', {
+        articles: results.articles || [],
+        page,
+        totalResults: results.totalResults || 0
+      });
+    } catch (error) {
+      console.error('Load more headlines error:', error);
+      socket.emit('news-error', { message: 'Failed to load more news' });
+    }
+  });
+
+  // Handle load more for search
+  socket.on('load-more-search', async ({ query, page }) => {
+    try {
+      const results = await searchNews(query, 'publishedAt', page);
+      socket.emit('more-search-results', {
+        articles: results.articles || [],
+        page,
+        totalResults: results.totalResults || 0
+      });
+    } catch (error) {
+      console.error('Load more search error:', error);
+      socket.emit('search-error', { message: 'Failed to load more results' });
     }
   });
 

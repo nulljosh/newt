@@ -10,12 +10,13 @@ const getApiKey = () => {
   return key;
 };
 
-export const getHeadlines = async (country = 'us', category = null) => {
+export const getHeadlines = async (country = 'us', category = null, page = 1) => {
   try {
     const params = {
       apiKey: getApiKey(),
       country,
-      pageSize: 50
+      pageSize: 20,
+      page
     };
 
     if (category) {
@@ -30,14 +31,15 @@ export const getHeadlines = async (country = 'us', category = null) => {
   }
 };
 
-export const searchNews = async (query, sortBy = 'publishedAt') => {
+export const searchNews = async (query, sortBy = 'publishedAt', page = 1) => {
   try {
     const params = {
       q: query,
       apiKey: getApiKey(),
-      pageSize: 50,
+      pageSize: 20,
       sortBy,
-      language: 'en'
+      language: 'en',
+      page
     };
 
     const response = await axios.get(`${NEWS_API_BASE}/everything`, { params });
