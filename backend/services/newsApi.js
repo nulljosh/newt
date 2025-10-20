@@ -1,16 +1,19 @@
 import axios from 'axios';
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
 const NEWS_API_BASE = 'https://newsapi.org/v2';
 
-if (!NEWS_API_KEY) {
-  console.warn('Warning: NEWS_API_KEY environment variable not set');
-}
+const getApiKey = () => {
+  const key = process.env.NEWS_API_KEY;
+  if (!key) {
+    console.warn('Warning: NEWS_API_KEY environment variable not set');
+  }
+  return key;
+};
 
 export const getHeadlines = async (country = 'us', category = null) => {
   try {
     const params = {
-      apiKey: NEWS_API_KEY,
+      apiKey: getApiKey(),
       country,
       pageSize: 50
     };
@@ -31,7 +34,7 @@ export const searchNews = async (query, sortBy = 'publishedAt') => {
   try {
     const params = {
       q: query,
-      apiKey: NEWS_API_KEY,
+      apiKey: getApiKey(),
       pageSize: 50,
       sortBy,
       language: 'en'

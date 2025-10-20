@@ -86,6 +86,10 @@ function App() {
           <NewsFeed articles={articles} />
         </>
       )}
+
+      <footer className="footer">
+        <p>&copy; 2026</p>
+      </footer>
     </div>
   );
 }
